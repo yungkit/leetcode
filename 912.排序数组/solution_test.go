@@ -50,10 +50,8 @@ func sortArray(nums []int) []int {
 	}
 
 	rand.Seed(time.Now().UnixNano())
-	quickSort(nums, 0, length-1)
-
+	iterativeQuicksort(nums)
 	return nums
-
 }
 
 func quickSort(nums []int, left, right int) {
@@ -99,8 +97,35 @@ func partition(nums []int, left, right int) int {
 	return j
 }
 
+func iterativeQuicksort(nums []int) {
+	stack := make([]int, 0)
+
+	stack = append(stack, 0)
+	stack = append(stack, len(nums)-1)
+
+	for len(stack) > 0 {
+
+		right := stack[len(stack)-1]
+		left := stack[len(stack)-2]
+		stack = stack[:len(stack)-2]
+
+		pivotIndex := partition(nums, left, right)
+
+		if pivotIndex < right {
+			stack = append(stack, pivotIndex+1)
+			stack = append(stack, right)
+		}
+
+		if pivotIndex > left {
+			stack = append(stack, left)
+			stack = append(stack, pivotIndex-1)
+		}
+	}
+}
+
 //leetcode submit region end(Prohibit modification and deletion)
 
 func TestSortAnArray(t *testing.T) {
+	//sortArray([]int{3, -1})
 	sortArray([]int{5, 2, 3, 1})
 }
