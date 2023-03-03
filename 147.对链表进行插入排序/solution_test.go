@@ -85,7 +85,6 @@ func insertionSortList(head *ListNode) *ListNode {
 		if cur.Val >= lastSorted.Val {
 			lastSorted = cur
 		} else {
-
 			// 从头到尾找cur第一个大于的node, 然后插进去
 			prev := dummyNode
 			for prev.Next.Val <= cur.Val {
