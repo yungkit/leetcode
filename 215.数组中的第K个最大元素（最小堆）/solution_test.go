@@ -66,37 +66,6 @@ func buildMinHeap(capacity int) *MinKthHeap {
 	return &MinKthHeap{nums: nums, capacity: capacity}
 }
 
-/**
-对index = i进行堆化, n是最后一个节点的坐标
-
-建最小堆，从上往下，不断把大的数值调整下去
-*/
-func minHeapify(nums []int, n, i int) {
-
-	if n <= i {
-		return
-	}
-
-	for {
-		maxPos := i
-		if 2*i+1 <= n && nums[2*i+1] < nums[i] {
-			maxPos = 2*i + 1
-		}
-
-		// 注意这里是把子节点较小的一个换上去
-		if 2*i+2 <= n && nums[2*i+2] < nums[maxPos] {
-			maxPos = 2*i + 2
-		}
-
-		if maxPos == i {
-			break
-		}
-
-		nums[i], nums[maxPos] = nums[maxPos], nums[i]
-		i = maxPos
-	}
-}
-
 func (h *MinKthHeap) Push(val int) {
 
 	if h.size >= h.capacity {
@@ -107,10 +76,11 @@ func (h *MinKthHeap) Push(val int) {
 		h.Pop()
 	}
 
-	// 自下往上
+	// 自下往上, 注意，前面Pop已经把h.size减1了
 	h.nums[h.size] = val
 	i := h.size
 
+	// 子节点index=i, 父节点index为 (i-1)/2
 	for (i-1)/2 >= 0 && h.nums[i] < h.nums[(i-1)/2] {
 		h.nums[i], h.nums[(i-1)/2] = h.nums[(i-1)/2], h.nums[i]
 		i = (i - 1) / 2
@@ -131,6 +101,38 @@ func (h *MinKthHeap) Pop() int {
 	h.size--
 	minHeapify(h.nums, h.size-1, 0)
 	return result
+}
+
+/**
+对index = i进行堆化, n是最后一个节点的坐标
+
+建最小堆，从上往下，不断把大的数值调整下去
+*/
+func minHeapify(nums []int, n, i int) {
+
+	if n <= i {
+		return
+	}
+
+	for {
+		maxPos := i
+		// 父节点index为i, 子节点为2*i+1, 2*i+2
+		if 2*i+1 <= n && nums[2*i+1] < nums[i] {
+			maxPos = 2*i + 1
+		}
+
+		// 注意这里是把子节点较小的一个换上去
+		if 2*i+2 <= n && nums[2*i+2] < nums[maxPos] {
+			maxPos = 2*i + 2
+		}
+
+		if maxPos == i {
+			break
+		}
+
+		nums[i], nums[maxPos] = nums[maxPos], nums[i]
+		i = maxPos
+	}
 }
 
 //leetcode submit region end(Prohibit modification and deletion)
