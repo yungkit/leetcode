@@ -85,9 +85,55 @@ import (
 //}
 
 /**
-hash的解法
+原地复制 + 再拆分的解法
 */
 func copyRandomList(head *Node) *Node {
+	if head == nil {
+		return nil
+	}
+
+	// 每个节点复制一个节点，串联起来
+	cur := head
+	for cur != nil {
+		newNode := &Node{Val: cur.Val}
+		tempNext := cur.Next
+		newNode.Next = tempNext
+		cur.Next = newNode
+		cur = tempNext
+	}
+
+	// 开始处理新节点的random指针，新节点random指针就是旧节点的random指针的next
+	cur = head
+	for cur != nil {
+		newNode := cur.Next
+		if cur.Random != nil {
+			newNode.Random = cur.Random.Next
+		}
+
+		cur = newNode.Next
+	}
+
+	// 这里好好理解一下，有时候，也可以用p，cur等简单命名的方式方便代码阅读
+	p := head
+	dummyNode := &Node{}
+	cur = dummyNode
+	for p != nil {
+		cur.Next = p.Next
+		cur = cur.Next
+
+		p.Next = cur.Next
+		p = p.Next
+	}
+
+	return dummyNode.Next
+
+}
+
+/**
+hash的解法
+*/
+
+func copyRandomList2(head *Node) *Node {
 	if head == nil {
 		return nil
 	}
