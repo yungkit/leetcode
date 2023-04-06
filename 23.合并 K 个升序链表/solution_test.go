@@ -119,6 +119,60 @@ import (
 //	return l2
 //}
 
+//递归思路2
+func mergeKLists(lists []*ListNode) *ListNode {
+	return merge(lists, 0, len(lists)-1)
+}
+
+func merge(lists []*ListNode, l, r int) *ListNode {
+	if l == r {
+		return lists[l]
+	}
+
+	if l > r {
+		return nil
+	}
+
+	mid := (l + r) >> 1
+	return mergeTwoLists(merge(lists, l, mid), merge(lists, mid+1, r))
+
+}
+
+func mergeTwoLists(l1, l2 *ListNode) *ListNode {
+	if l1 == nil {
+		return l2
+	}
+
+	if l2 == nil {
+		return l1
+	}
+
+	dummyNode := &ListNode{}
+	cur := dummyNode
+	p1, p2 := l1, l2
+	for p1 != nil && p2 != nil {
+		if p1.Val < p2.Val {
+			cur.Next = p1
+			p1 = p1.Next
+		} else {
+			cur.Next = p2
+			p2 = p2.Next
+		}
+
+		cur = cur.Next
+	}
+
+	if p1 != nil {
+		cur.Next = p1
+	}
+
+	if p2 != nil {
+		cur.Next = p2
+	}
+
+	return dummyNode.Next
+}
+
 //leetcode submit region end(Prohibit modification and deletion)
 
 func TestMergeKSortedLists(t *testing.T) {
